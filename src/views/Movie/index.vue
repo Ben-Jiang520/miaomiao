@@ -36,6 +36,29 @@ export default {
        Header,
        TabBar,
    },
+   mounted(){
+     setTimeout(()=>{
+        this.axios.get('/ipJson.jsp').then((res)=>{
+            var getCityString = res.data.split("(")[2];
+            var getCityJson = getCityString.substring(0, getCityString.length-10);
+            var cityJson = JSON.parse(getCityJson);
+            var nm = cityJson.city;
+            var id = cityJson.cityCode;
+            if(this.$store.state.city.id == id){ return;}
+            messageBox({
+                title: '定位',
+                content: nm,
+                cancle: '取消',
+                ok: '切换定位',
+                handleOk(){
+                  window.localStorage.setItem('nowNm', nm);
+                  window.localStorage.setItem('nowId', id);
+                  window.location.reload();
+                },
+            })  
+        })
+    },3000)   
+  },
    /* mounted(){
      setTimeout(()=>{
           this.axios.get('').then((res)=>{
