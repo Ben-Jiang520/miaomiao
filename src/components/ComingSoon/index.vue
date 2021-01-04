@@ -1,31 +1,34 @@
 <template>
 	<div class="movie_body">
-		<ul>
-			<!-- <li>
-				<div class="pic_show"><img src="/images/movie_1.jpg"></div>
-				<div class="info_list">
-					<h2>无名之辈</h2>
-					<p><span class="person">17746</span> 人想看</p>
-					<p>主演: 陈建斌,任素汐,潘斌龙</p>
-					<p>2018-11-30上映</p>
-				</div>
-				<div class="btn_pre">
-					预售
-				</div>
-			</li> -->
-			<li v-for="item in comingList" :key="item.id">
-				<div class="pic_show"><img :src="item.img | setWH('128.100')"></div>
-				<div class="info_list">
-					<h2>{{item.nm}} <img v-if="item.version" src="@/assets/maxs.png" style="width:20px"></h2>
-					<p><span class="person">{{item.wish}}</span> 人想看</p>
-					<p>主演:{{item.star}}</p>
-					<p>{{item.rt}}上映</p>
-				</div>
-				<div class="btn_pre">
-					预售
-				</div>
-			</li>
-		</ul>
+		<Loading v-if="isLoading"/>
+		<Scroller v-else>
+			<ul>
+				<!-- <li>
+					<div class="pic_show"><img src="/images/movie_1.jpg"></div>
+					<div class="info_list">
+						<h2>无名之辈</h2>
+						<p><span class="person">17746</span> 人想看</p>
+						<p>主演: 陈建斌,任素汐,潘斌龙</p>
+						<p>2018-11-30上映</p>
+					</div>
+					<div class="btn_pre">
+						预售
+					</div>
+				</li> -->
+				<li v-for="item in comingList" :key="item.id">
+					<div class="pic_show"><img :src="item.img | setWH('128.100')"></div>
+					<div class="info_list">
+						<h2>{{item.nm}} <img v-if="item.version" src="@/assets/maxs.png" style="width:20px"></h2>
+						<p><span class="person">{{item.wish}}</span> 人想看</p>
+						<p>主演:{{item.star}}</p>
+						<p>{{item.rt}}上映</p>
+					</div>
+					<div class="btn_pre">
+						预售
+					</div>
+				</li>
+			</ul>
+		</Scroller>
 	</div>
 </template>
 
@@ -34,12 +37,17 @@ export default {
    name : 'ComingSoon',
    data(){
 	   return {
-		   comingList: []
+		   comingList: [],
+		   isLoading: true,
 	   }
    },
-   mounted(){
-		this.axios.get('/ajax/comingList?token=').then((res)=>{
+   activated(){
+		var cityId = this.$store.state.city.id;
+		if(this.prevCityId === cityId ){ return;}
+		this.isLoading = false; 
+		this.axios.get('/ajax/comingList?token' ).then((res)=>{
 		this.comingList = res.data.coming;
+		this.isLoading = false;
 	   })
    }
 }
@@ -47,7 +55,7 @@ export default {
 
 <style scoped>
    #content .movie_body{ flex:1; overflow:auto;}
-   .movie_body ul{ margin:0 12px; overflow: hidden;}
+   .movie_body ul{ margin:0 12px; overflow: hidden; height:1000px;}
    .movie_body ul li{ margin-top:12px; display: flex; align-items:center; border-bottom: 1px #e6e6e6 solid; padding-bottom: 10px;}
    .movie_body .pic_show{ width:64px; height: 90px;}
    .movie_body .pic_show img{ width:100%;}

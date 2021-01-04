@@ -28,21 +28,27 @@
 				<li>E</li>
 			</ul>
 		</div> -->
+		
 		<div class="city_list">
-			<div class="city_hot">
-				<h2>热门城市</h2>
-				<ul class="clearfix">
-					<li v-for="item in hotList" :key="item.id">{{item.name}}</li>
-				</ul>
-			</div>
-			<div class="city_sort" ref="city_sort">
-				<div v-for="item in cityList" :key="item.index">
-					<h2>{{item.index}}</h2>
-					<ul>
-						<li v-for="itemList in item.list" :key="itemList.id">{{itemList.nm}}</li>
-					</ul>
+			<Loading v-if="isLoading"/>
+			<Scroller v-else ref="city_list">
+				<div class="scrolist">
+					<div class="city_hot">
+						<h2>热门城市</h2>
+						<ul class="clearfix">
+							<li v-for="item in hotList" :key="item.cityId" @click="handleToCity(item.name, item.cityId)">{{item.name}}</li>
+						</ul>
+					</div>
+					<div class="city_sort" ref="city_sort">
+						<div v-for="item in cityList" :key="item.index">
+							<h2>{{item.index}}</h2>
+							<ul>
+								<li v-for="itemList in item.list" :key="itemList.id"  @click="handleToCity(itemList.nm, itemList.id)">{{itemList.nm}}</li>
+							</ul>
+						</div>
+					</div>
 				</div>
-			</div>
+			</Scroller>
 	    </div>
 	 	<div class="city_index">
 			<ul>
@@ -58,25 +64,41 @@ export default {
   data(){
 	  return {
 		cityList: [],
-		hotList: []
+		hotList: [],
+		isLoading: true,
 	  }
   },
   mounted(){
-	  this.axios({
-      url:"https://m.maizuo.com/gateway?k=9502566",
-      headers:{
-        'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"15610855429195524981146"}',
-        'X-Host': 'mall.film-ticket.city.list'
-      }
-    }).then((res)=>{
-		  var msg = res.data.msg;
-		  if(msg === 'ok'){
-			  var cities = res.data.data.cities;
-			  var { cityList, hotList} = this.formatCityList(cities);
-			  this.cityList = cityList;
-			  this.hotList = hotList;
-		  }
-	  });
+	  var cityList = window.localStorage.getItem('cityList');
+	  var hotList = window.localStorage.getItem('hotList');
+
+	  if(cityList && hotList){
+			  this.cityList = JSON.parse(cityList);
+			  this.hotList = JSON.parse(hotList);
+			  this.isLoading = false;
+	  }else{
+			this.axios({
+				url:"https://m.maizuo.com/gateway?k=9502566",
+				headers:{
+					'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"15610855429195524981146"}',
+					'X-Host': 'mall.film-ticket.city.list'
+				}
+			}).then((res)=>{
+				var msg = res.data.msg;
+				if(msg === 'ok'){  
+					this.isLoading = false;
+					var cities = res.data.data.cities;
+					var { cityList, hotList} = this.formatCityList(cities);
+					this.cityList = cityList;
+					this.hotList = hotList;
+					console.log(this.hotList);
+					window.localStorage.setItem('cityList', JSON.stringify(cityList));
+					window.localStorage.setItem('hotList', JSON.stringify(hotList));
+				}
+			});
+	  }
+	  
+	  
   },
   methods:{
 	  formatCityList(cities){
@@ -126,8 +148,16 @@ export default {
 	  },
 	  handleToIndex(index){
 		var h2 = this.$refs.city_sort.getElementsByTagName('h2');
-		this.$refs.city_sort.parentNode.scrollTop = h2[index].offsetTop;
-	  }	
+		// this.$refs.city_sort.parentNode.scrollTop = h2[index].offsetTop;
+		this.$refs.city_list.toScrollTop(-h2[index].offsetTop);
+		
+	  },
+	  handleToCity(nm, id){
+		this.$store.commit('city/CITY_INFO', {nm, id});
+		window.localStorage.setItem('nowNm', nm);
+		window.localStorage.setItem('nowId', id);
+		this.$router.push('/movie/nowPlaying');
+	  }
   }
 }
 </script>
@@ -139,6 +169,7 @@ export default {
         background-color:transparent;
         width:0;
     }
+	.city_body .city_list .scrolist{height:10810px;}
     .city_body .city_hot{ margin-top: 20px;}
     .city_body .city_hot h2{ padding-left: 15px; line-height: 30px; font-size: 14px; background:#F0F0F0; font-weight: normal;}
     .city_body .city_hot ul li{ float: left; background: #fff; width: 29%; height: 33px; margin-top: 15px; margin-left: 3%; padding: 0 4px; border: 1px solid #e6e6e6; border-radius: 3px; line-height: 33px; text-align: center; box-sizing: border-box;}
