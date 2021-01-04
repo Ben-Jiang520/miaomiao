@@ -1,34 +1,37 @@
 <template>
   <div class="cinema_body">
-	<ul>
-		<!-- <li>
-			<div>
-				<span>大地影院(澳东世纪店)</span>
-				<span class="q"><span class="price">22.9</span> 元起</span>
-			</div>
-			<div class="address">
-				<span>金州区大连经济技术开发区澳东世纪3层</span>
-				<span>1763.5km</span>
-			</div>
-			<div class="card">
-    			<div>小吃</div>
-    			<div>折扣卡</div>
-			</div>
-		</li> -->
-		<li v-for="item in cinemaList" :key="item.id">
-			<div>
-				<span>{{item.nm}}</span>
-				<span v-if="item.sellPrice" class="q"><span class="price">{{item.sellPrice}}</span> 元起</span>
-			</div>
-			<div class="address">
-				<span>{{item.addr}}</span>
-				<span>{{item.distance}}</span>
-			</div>
-			<div class="card">
-    			<div v-for="(num,key) in item.tag" v-if="num===1" :key="key" :class="key | classCard">{{key | formatCard}}</div>
-			</div>
-		</li>
-   </ul>
+	  <Loading v-if="isLoading"/>
+	  <Scroller v-else>
+			<ul>
+				<!-- <li>
+					<div>
+						<span>大地影院(澳东世纪店)</span>
+						<span class="q"><span class="price">22.9</span> 元起</span>
+					</div>
+					<div class="address">
+						<span>金州区大连经济技术开发区澳东世纪3层</span>
+						<span>1763.5km</span>
+					</div>
+					<div class="card">
+						<div>小吃</div>
+						<div>折扣卡</div>
+					</div>
+				</li> -->
+				<li v-for="item in cinemaList" :key="item.id">
+					<div>
+						<span>{{item.nm}}</span>
+						<span v-if="item.sellPrice" class="q"><span class="price">{{item.sellPrice}}</span> 元起</span>
+					</div>
+					<div class="address">
+						<span>{{item.addr}}</span>
+						<span>{{item.distance}}</span>
+					</div>
+					<div class="card">
+						<div v-for="(num,key) in item.tag" v-if="num===1" :key="key" :class="key | classCard">{{key | formatCard}}</div>
+					</div>
+				</li>
+			</ul>
+   </Scroller>
  </div>
 </template>
 
@@ -37,12 +40,19 @@ export default {
 	name: 'CiList',
 	data(){
 		return {
-			cinemaList: []
+			cinemaList: [],
+			isLoading: true,
+			prevCityId: -1
 		}
 	},
-	mounted(){
-		this.axios.get('/ajax/cinemaList').then((res)=>{
+	activated(){
+		var cityId = this.$store.state.city.id;
+		if(this.prevCityId === cityId ){ return;}
+		this.isLoading = false; 
+		this.axios.get('ajax/cinemaList?ci='+cityId).then((res)=>{
+			this.isLoading = false;
 			this.cinemaList = res.data.cinemas;
+			this.prevCityId = cityId;
 		})
 	},
 	filters: {
@@ -86,7 +96,7 @@ export default {
 
 <style scoped>
    #content .cinema_body{ flex:1; overflow:auto;}
-   .cinema_body ul{ padding:20px;}
+   .cinema_body ul{ padding:20px; height:1000px;}
    .cinema_body li{  border-bottom:1px solid #e6e6e6; margin-bottom: 20px;}
    .cinema_body div{ margin-bottom: 10px;}
    .cinema_body .q{ font-size: 11px; color:#f03d37;}
