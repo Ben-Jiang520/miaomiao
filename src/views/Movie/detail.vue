@@ -96,15 +96,16 @@ export default {
   mounted(){
     //   console.log(this.movieId);
     this.axios.get('/ajax/detailmovie?movieId=' + this.movieId).then((res)=>{
-		this.detailMovie = res.data.detailMovie;
 		this.isLoading = false;
+		this.detailMovie = res.data.detailMovie;
         this.$nextTick(()=>{
             new Swiper(this.$refs.detail_player , {
                 slidesPerView : 'auto',
                 freeMode : true,
                 freeModeSticky: true
 	        });
-        })
+		});
+		
     })
   }
 }
