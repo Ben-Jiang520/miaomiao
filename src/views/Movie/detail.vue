@@ -130,7 +130,7 @@ export default {
     .detail_list .detail_list_info p{ color:white; line-height: 20px; font-size: 14px; color:#ccc;}
     #content .detail_intro{ padding: 10px;}
     #content .detail_player{ margin:20px;}
-    .detail_player .swiper-slide{ width:70px; margin-right: 20px; text-align: center; font-size: 14px;}
+    .detail_player .swiper-slide{ width:140px; margin-right: 20px; text-align: center; font-size: 14px;}
     .detail_player .swiper-slide img{ width:100%; margin-bottom: 5px;}
     .detail_player .swiper-slide p:nth-of-type(2){ color:#999;}
     </style>
