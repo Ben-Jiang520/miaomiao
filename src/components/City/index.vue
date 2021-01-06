@@ -36,14 +36,14 @@
 					<div class="city_hot">
 						<h2>热门城市</h2>
 						<ul class="clearfix">
-							<li v-for="item in hotList" :key="item.cityId" @click="handleToCity(item.name, item.cityId)">{{item.name}}</li>
+							<li v-for="item in hotList" :key="item.cityId" @tap="handleToCity(item.name, item.cityId)">{{item.name}}</li>
 						</ul>
 					</div>
 					<div class="city_sort" ref="city_sort">
 						<div v-for="item in cityList" :key="item.index">
 							<h2>{{item.index}}</h2>
 							<ul>
-								<li v-for="itemList in item.list" :key="itemList.id"  @click="handleToCity(itemList.nm, itemList.id)">{{itemList.nm}}</li>
+								<li v-for="itemList in item.list" :key="itemList.id"  @tap="handleToCity(itemList.nm, itemList.id)">{{itemList.nm}}</li>
 							</ul>
 						</div>
 					</div>

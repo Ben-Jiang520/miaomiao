@@ -16,9 +16,9 @@
 					</div>
 				</li> -->
 				<li v-for="item in comingList" :key="item.id">
-					<div class="pic_show" @click="handleToDetail(item.id)"><img :src="item.img | setWH('128.100')"></div>
+					<div class="pic_show" @tap="handleToDetail(item.id)"><img :src="item.img | setWH('128.100')"></div>
 					<div class="info_list">
-						<h2 @click="handleToDetail(item.id)">{{item.nm}} <img v-if="item.version" src="@/assets/maxs.png" style="width:20px"></h2>
+						<h2 @tap="handleToDetail(item.id)">{{item.nm}} <img v-if="item.version" src="@/assets/maxs.png" style="width:20px"></h2>
 						<p><span class="person">{{item.wish}}</span> 人想看</p>
 						<p>主演:{{item.star}}</p>
 						<p>{{item.rt}}上映</p>
@@ -60,7 +60,7 @@ export default {
 
 <style scoped>
    #content .movie_body{ flex:1; overflow:auto;}
-   .movie_body ul{ margin:0 12px; overflow: hidden; height:1000px;}
+   .movie_body ul{ margin:0 12px; overflow: hidden; }
    .movie_body ul li{ margin-top:12px; display: flex; align-items:center; border-bottom: 1px #e6e6e6 solid; padding-bottom: 10px;}
    .movie_body .pic_show{ width:64px; height: 90px;}
    .movie_body .pic_show img{ width:100%;}

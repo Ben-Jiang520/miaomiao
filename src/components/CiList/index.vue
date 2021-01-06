@@ -96,7 +96,7 @@ export default {
 
 <style scoped>
    #content .cinema_body{ flex:1; overflow:auto;}
-   .cinema_body ul{ padding:20px; height:1000px;}
+   .cinema_body ul{ padding:20px; }
    .cinema_body li{  border-bottom:1px solid #e6e6e6; margin-bottom: 20px;}
    .cinema_body div{ margin-bottom: 10px;}
    .cinema_body .q{ font-size: 11px; color:#f03d37;}
